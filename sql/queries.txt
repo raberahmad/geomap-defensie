@@ -1,0 +1,8 @@
+select * from user, login where user.userid = login.user_userid and session = 1
+
+
+
+select userid, naam, ip, date, app from user, login where user.userid = login.user_userid and session = 1 order by login.date limit 10;
+
+
+
