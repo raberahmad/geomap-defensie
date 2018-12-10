@@ -8,7 +8,7 @@ const map = new mapboxgl.Map({
 });
 
 //var users = "file:///C:/Users/Raber/Documents/min-def-geomap/geodata.geojson"
-var users = "http://localhost/geodata/"
+var users = "http://104.40.143.12/geodata/"
 map.on('load', function() {
     window.setInterval(function() {
         map.getSource("userlogins").setData(users);

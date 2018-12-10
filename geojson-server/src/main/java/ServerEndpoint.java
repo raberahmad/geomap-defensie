@@ -9,13 +9,15 @@ import java.nio.file.Paths;
 
 @Path("/")
 public class ServerEndpoint {
+
+
     @GET
     @Path("/geodata")
     public Response readGeoJSON() {
         try {
             JSONParser parser = new JSONParser();
 
-            Object data = parser.parse(new FileReader("src/main/resources/geodata.geojson"));//path to the JSON file.
+            Object data = parser.parse(new FileReader(Processor.getUserDirectory()+"/geomap-defensie/json/geodata.geojson"));//path to the JSON file.
 
             String json = data.toString();
             System.out.println("got request");
@@ -34,7 +36,7 @@ public class ServerEndpoint {
     public FileInputStream homeMap(){
         System.out.println("New request map");
         try {
-            File index = new File("src/main/resources/index.html");
+            File index = new File(Processor.getUserDirectory()+"/geomap-defensie/web/index.html");
             return new FileInputStream(index);
         }
         catch (FileNotFoundException e){
@@ -50,7 +52,7 @@ public class ServerEndpoint {
     public Response jsCode(){
         System.out.println("New request code");
         try {
-            String content = new String(Files.readAllBytes(Paths.get("src/main/resources/index.js")), "UTF-8");
+            String content = new String(Files.readAllBytes(Paths.get(Processor.getUserDirectory()+"/geomap-defensie/web/index.js")));
             return response(content);
         }
         catch (Exception e){

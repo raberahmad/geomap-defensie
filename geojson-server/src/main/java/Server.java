@@ -12,12 +12,17 @@ public class Server extends Thread {
     private ResourceConfig config;
     private HttpServer server;
 
+
+
     public Server(){
+
         URI uri = URI.create("http://104.40.143.12"+ port);
 
         this.config = new ResourceConfig(ServerEndpoint.class);
         config.register(JacksonJaxbJsonProvider.class);
         this.server = GrizzlyHttpServerFactory.createHttpServer(uri, config, true);
+
+
 
     }
 
@@ -40,4 +45,5 @@ public class Server extends Thread {
 
         }
     }
+
 }

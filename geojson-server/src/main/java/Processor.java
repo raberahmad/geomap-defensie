@@ -16,7 +16,10 @@ public class Processor extends Thread {
     private SQLConnection connectionDB;
     private List<String[]> results ;
 
+    private static String userDirectory;
+
     public Processor(){
+        getOS();
         this.connectionDB = new SQLConnection();
         connectionDB.makeConnection();
 
@@ -79,7 +82,7 @@ public class Processor extends Thread {
 
     public void writeGEOJSONtoFILE(String geodata){
         try {
-            FileWriter fileWriter = new FileWriter("src/main/resources/geodata.geojson");
+            FileWriter fileWriter = new FileWriter(getUserDirectory()+"/geomap-defensie/json/geodata.geojson");
             PrintWriter printWriter = new PrintWriter(fileWriter);
             printWriter.print(geodata);
             printWriter.close();
@@ -95,7 +98,7 @@ public class Processor extends Thread {
 
         try {
             //Gebruik in de Pstmt ASC of DESC om de eerste 5 of de laatste 5 recods optevragen.
-            PreparedStatement ps = connectionDB.getConnection().prepareStatement("select userid, naam, ip, date, app from user, login where user.userid = login.user_userid and session = 1 order by login.date limit 50");
+            PreparedStatement ps = connectionDB.getConnection().prepareStatement("select userid, naam, ip, date, app from user, login where user.userid = login.user_userid and session = 1 order by login.date limit 100");
 
             ResultSet rs = ps.executeQuery();
 
@@ -138,5 +141,25 @@ public class Processor extends Thread {
             System.out.println("Thread was interupted");
             e.printStackTrace();
         }
+    }
+
+    public void getOS(){
+
+        String osName = System.getProperty("os.name");
+        String osNameMatch = osName.toLowerCase();
+        if(osNameMatch.contains("linux")) {
+            userDirectory = "/home/doug/";
+        }else if(osNameMatch.contains("windows")) {
+            userDirectory = "windows";
+        }else if(osNameMatch.contains("mac os") || osNameMatch.contains("macos") || osNameMatch.contains("darwin")) {
+            userDirectory = System.getProperty("user.home");
+        }else {
+            System.out.println("could not determine the OS");
+        }
+        System.out.println(userDirectory);
+    }
+
+    public static String getUserDirectory() {
+        return userDirectory;
     }
 }
