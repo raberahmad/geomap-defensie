@@ -98,7 +98,7 @@ public class Processor extends Thread {
 
         try {
             //Gebruik in de Pstmt ASC of DESC om de eerste 5 of de laatste 5 recods optevragen.
-            PreparedStatement ps = connectionDB.getConnection().prepareStatement("select userid, naam, ip, date, app from user, login where user.userid = login.user_userid and session = 1 order by login.date limit 100");
+            PreparedStatement ps = connectionDB.getConnection().prepareStatement("select userid, naam, ip, date, app from user, login where user.userid = login.user_userid and session = 1 order by login.date limit 300");
 
             ResultSet rs = ps.executeQuery();
 

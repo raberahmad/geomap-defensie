@@ -7,14 +7,12 @@ const map = new mapboxgl.Map({
     center: [4.28, 52.07]
 });
 
-//var users = "file:///C:/Users/Raber/Documents/min-def-geomap/geodata.geojson"
-var users = "http://104.40.143.12/geodata/"
+var users = "http://localhost/geodata/"
 map.on('load', function() {
     window.setInterval(function() {
         map.getSource("userlogins").setData(users);
     }, 2000);
-    // Add a new source from our GeoJSON data and set the
-    // 'cluster' option to true. GL-JS will add the point_count property to your source data.
+
     map.addSource("userlogins", {
         type: "geojson",
         data: users,
