@@ -7,7 +7,7 @@ const map = new mapboxgl.Map({
     center: [4.28, 52.07]
 });
 
-var users = "http://localhost/geodata/"
+var users = "https://localhost/geodata/"
 map.on('load', function() {
     window.setInterval(function() {
         map.getSource("userlogins").setData(users);

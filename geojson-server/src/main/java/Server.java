@@ -1,5 +1,7 @@
 import org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider;
 import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.grizzly.ssl.SSLContextConfigurator;
+import org.glassfish.grizzly.ssl.SSLEngineConfigurator;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
@@ -12,15 +14,30 @@ public class Server extends Thread {
     private ResourceConfig config;
     private HttpServer server;
 
+    private static final String KEYSTORE_SERVER_FILE = "keys/keystore_server";
+    private static final String KEYSTORE_SERVER_PWD = "key123";
+    private static final String TRUSTORE_SERVER_FILE = "keys/truststore_server";
+    private static final String TRUSTORE_SERVER_PWD = "key123";
+
 
 
     public Server(){
 
-        URI uri = URI.create("http://104.40.143.12"+ port);
+        // Grizzly ssl configuration
+        SSLContextConfigurator sslContext = new SSLContextConfigurator();
+
+        // set up security context
+        sslContext.setKeyStoreFile(KEYSTORE_SERVER_FILE); // contains server keypair
+        sslContext.setKeyStorePass(KEYSTORE_SERVER_PWD);
+        sslContext.setTrustStoreFile(TRUSTORE_SERVER_FILE); // contains client certificate
+        sslContext.setTrustStorePass(TRUSTORE_SERVER_PWD);
+
+
+        URI uri = URI.create("https://104.40.143.12"+ port);
 
         this.config = new ResourceConfig(ServerEndpoint.class);
         config.register(JacksonJaxbJsonProvider.class);
-        this.server = GrizzlyHttpServerFactory.createHttpServer(uri, config, true);
+        this.server = GrizzlyHttpServerFactory.createHttpServer(uri, config, true, new SSLEngineConfigurator(sslContext).setClientMode(false).setNeedClientAuth(false));
 
 
 
