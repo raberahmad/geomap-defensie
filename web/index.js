@@ -110,6 +110,10 @@ map.on('load', function() {
     map.on('click', 'unclustered-point', function (e) {
         var coordinates = e.features[0].geometry.coordinates.slice();
         var userid = e.features[0].properties.userID.slice();
+        var naam = e.features[0].properties.Naam.slice();
+        var ip = e.features[0].properties.IP.slice();
+        var date = e.features[0].properties.Date.slice();
+        var app = e.features[0].properties.Applicatie.slice();
         // Ensure that if the map is zoomed out such that multiple
         // copies of the feature are visible, the popup appears
         // over the copy being pointed to.
@@ -119,7 +123,7 @@ map.on('load', function() {
 
         new mapboxgl.Popup()
             .setLngLat(coordinates)
-            .setHTML("<strong> User: "+userid+"</strong><p>"+coordinates+"</p>")
+            .setHTML("<strong> User: "+userid+"<br>Naam: "+naam+"<br>Ip: "+ip+"<br>Date: "+date+"<br>App: "+app+"</strong><p>"+coordinates+"</p>")
             .addTo(map);
     });
 

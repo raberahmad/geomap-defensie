@@ -23,10 +23,10 @@ public class Server extends Thread {
 
     public Server(){
 
-        // Grizzly ssl configuration
+        // ssl config
         SSLContextConfigurator sslContext = new SSLContextConfigurator();
 
-        // set up security context
+        // security
         sslContext.setKeyStoreFile(KEYSTORE_SERVER_FILE); // contains server keypair
         sslContext.setKeyStorePass(KEYSTORE_SERVER_PWD);
         sslContext.setTrustStoreFile(TRUSTORE_SERVER_FILE); // contains client certificate

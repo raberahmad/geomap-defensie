@@ -35,7 +35,7 @@ public class Processor extends Thread {
 
             buildGeoJSON();
 
-            //sleep(1000*60*20); //sleep for 1000 milisec * 60 * 20 = 20 minutes
+            sleep(1000*60*20); //sleep for 1000 milisec * 60 * 20 = 20 minutes
 
         }
     }
@@ -56,7 +56,11 @@ public class Processor extends Thread {
                     add("geometry", Json.createObjectBuilder().add("type","Point")
                             .add("coordinates", Json.createArrayBuilder().add(extremeIPLookup.getLon()).add(extremeIPLookup.getLat()))).
                     add("properties", Json.createObjectBuilder().
-                            add("userID", results.get(i)[0]));
+                            add("userID", results.get(i)[0]).
+                            add("Naam", results.get(i)[1]).
+                            add("IP", results.get(i)[2]).
+                            add("Date", results.get(i)[3]).
+                            add("Applicatie", results.get(i)[4]));
 
 
             int index = i+1;
