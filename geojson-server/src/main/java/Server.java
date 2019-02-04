@@ -27,9 +27,9 @@ public class Server extends Thread {
         SSLContextConfigurator sslContext = new SSLContextConfigurator();
 
         // security
-        sslContext.setKeyStoreFile(KEYSTORE_SERVER_FILE); // contains server keypair
+        sslContext.setKeyStoreFile(KEYSTORE_SERVER_FILE);
         sslContext.setKeyStorePass(KEYSTORE_SERVER_PWD);
-        sslContext.setTrustStoreFile(TRUSTORE_SERVER_FILE); // contains client certificate
+        sslContext.setTrustStoreFile(TRUSTORE_SERVER_FILE);
         sslContext.setTrustStorePass(TRUSTORE_SERVER_PWD);
 
 

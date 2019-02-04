@@ -35,7 +35,7 @@ public class Processor extends Thread {
 
             buildGeoJSON();
 
-            sleep(1000*60*20); //sleep for 1000 milisec * 60 * 20 = 20 minutes
+            //sleep(1000*60*20); //sleep for 1000 milisec * 60 * 20 = 20 minutes
 
         }
     }
@@ -45,8 +45,9 @@ public class Processor extends Thread {
 
         for(int i = 0; i<results.size(); i++){
 
-            System.out.println("userid:\t"+results.get(i)[0]+", naam:\t"+results.get(i)[1]+", ip:\t"+results.get(i)[2]+", date:\t"+results.get(i)[3]+", app:\t"+results.get(i)[4]);
-            ExtremeIPLookup extremeIPLookup= new ExtremeIPLookup(results.get(i)[2]); //ip gegevens opvragen
+            System.out.println("userid:\t"+results.get(i)[0]+", naam:\t"+results.get(i)[1]+", " +
+                    "ip:\t"+results.get(i)[2]+", date:\t"+results.get(i)[3]+", app:\t"+results.get(i)[4]);
+            ExtremeIPLookup extremeIPLookup= new ExtremeIPLookup(results.get(i)[2]); //ip gegevens opvragen vanuit de API van extreme-ip-lookup
             System.out.println(" ");
 
 
@@ -60,7 +61,9 @@ public class Processor extends Thread {
                             add("Naam", results.get(i)[1]).
                             add("IP", results.get(i)[2]).
                             add("Date", results.get(i)[3]).
-                            add("Applicatie", results.get(i)[4]));
+                            add("Applicatie", results.get(i)[4]).
+                            add("CountryCode", extremeIPLookup.getCountryCode()).
+                            add("Country", extremeIPLookup.getCountry()));
 
 
             int index = i+1;
@@ -80,8 +83,6 @@ public class Processor extends Thread {
         System.out.println(data);
 
         writeGEOJSONtoFILE(data);
-
-
     }
 
     public void writeGEOJSONtoFILE(String geodata){
@@ -102,7 +103,7 @@ public class Processor extends Thread {
 
         try {
             //Gebruik in de Pstmt ASC of DESC om de eerste 5 of de laatste 5 recods optevragen.
-            PreparedStatement ps = connectionDB.getConnection().prepareStatement("select userid, naam, ip, date, app from user, login where user.userid = login.user_userid and session = 1 order by login.date limit 300");
+            PreparedStatement ps = connectionDB.getConnection().prepareStatement("select userid, naam, ip, date, app from user, login where user.userid = login.user_userid and enddate is null order by login.date limit 267");
 
             ResultSet rs = ps.executeQuery();
 

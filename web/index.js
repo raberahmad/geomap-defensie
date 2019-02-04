@@ -7,18 +7,20 @@ const map = new mapboxgl.Map({
     center: [4.28, 52.07]
 });
 
+
+
 var users = "https://localhost/geodata/"
 map.on('load', function() {
     window.setInterval(function() {
         map.getSource("userlogins").setData(users);
-    }, 2000);
+    }, 1000*60*5);
 
     map.addSource("userlogins", {
         type: "geojson",
         data: users,
         cluster: true,
-        clusterMaxZoom: 14, // Max zoom to cluster points on
-        clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
+        clusterMaxZoom: 14, 
+        clusterRadius: 50 
     });
 
     map.addLayer({
@@ -27,11 +29,6 @@ map.on('load', function() {
         source: "userlogins",
         filter: ["has", "point_count"],
         paint: {
-            // Use step expressions (https://www.mapbox.com/mapbox-gl-js/style-spec/#expressions-step)
-            // with three steps to implement three types of circles:
-            //   * Blue, 20px circles when point count is less than 100
-            //   * Yellow, 30px circles when point count is between 100 and 750
-            //   * Pink, 40px circles when point count is greater than or equal to 750
             "circle-color": [
                 "step",
                 ["get", "point_count"],
@@ -53,6 +50,8 @@ map.on('load', function() {
         }
     });
 
+
+    
     map.addLayer({
         id: "cluster-count",
         type: "symbol",
@@ -64,7 +63,7 @@ map.on('load', function() {
             "text-size": 12
         }
     });
-
+    
     map.addLayer({
         id: "unclustered-point",
         type: "circle",
@@ -80,6 +79,7 @@ map.on('load', function() {
 
     // inspect a cluster on click
     map.on('click', 'clusters', function (e) {
+        
         var features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
         var clusterId = features[0].properties.cluster_id;
         map.getSource('userlogins').getClusterExpansionZoom(clusterId, function (err, zoom) {
@@ -101,11 +101,7 @@ map.on('load', function() {
     });
 
 
-    readTextFile(users, function(text){
-        var data = JSON.parse(text);
-        console.log(data);
-        document.getElementById("amountusers").innerHTML = "Users: "+data.features.length;
-    });
+   
 
     map.on('click', 'unclustered-point', function (e) {
         var coordinates = e.features[0].geometry.coordinates.slice();
@@ -114,6 +110,8 @@ map.on('load', function() {
         var ip = e.features[0].properties.IP.slice();
         var date = e.features[0].properties.Date.slice();
         var app = e.features[0].properties.Applicatie.slice();
+        
+        
         // Ensure that if the map is zoomed out such that multiple
         // copies of the feature are visible, the popup appears
         // over the copy being pointed to.
@@ -129,18 +127,45 @@ map.on('load', function() {
 
 
 
-    // Change the cursor to a pointer when the mouse is over the places layer.
+   
     map.on('mouseenter', 'unclustered-point', function () {
         map.getCanvas().style.cursor = 'pointer';
     });
 
-    // Change it back to a pointer when it leaves.
+    
     map.on('mouseleave', 'unclustered-point', function () {
         map.getCanvas().style.cursor = '';
+    });
+
+
+    readTextFile(users, function(text){
+        const data = JSON.parse(text);
+        const properties = data.features.map(feature => feature.properties);
+        const ApplicatieArray = properties.map(property => property.Applicatie);
+        const ApplicatieFrequency = ApplicatieArray.reduce((acc, value) => ({ 
+                ...acc, 
+                [value]: acc[value] ? acc[value] + 1 : 1 
+            })
+        , {})
+    
+        const {DevOps, Office, Peoplesoft, Azure, Optima, AdaTech} = ApplicatieFrequency;
+        const length = ApplicatieArray.length;
+    
+        console.log(ApplicatieFrequency);
+    
+        var informationBar = document.getElementById('information');
+        informationBar.style.display = 'none'
+        document.getElementById('information').innerHTML = '<h2>Users</h2>' + '<strong>DevOps: ' + DevOps + '</strong><br><strong>Office: ' + Office + '</strong><br><strong>Peoplesoft: ' + Peoplesoft + '</strong><br><strong>Azure: ' + Azure + '</strong><br><strong>Optima: ' + Optima + '</strong><br><strong>Ada-Tech: ' + AdaTech + '</strong><br><strong>Total: ' + length + '</strong>'
+    
+        informationBar.style.display = 'block';
+    
+        
     });
     
    
 });
+
+
 
 function readTextFile(file, callback) {
     var rawFile = new XMLHttpRequest();

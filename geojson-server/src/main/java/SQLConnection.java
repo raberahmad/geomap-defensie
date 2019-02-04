@@ -62,16 +62,16 @@ public class SQLConnection {
     public void makeSSHConnection(){
         try {
             JSch jsch = new JSch();
-            // Get SSH session
+
             this.session = jsch.getSession(servUser, host, port);
             this.session.setPassword(servPwd);
             java.util.Properties config = new java.util.Properties();
-            // Never automatically add new host keys to the host file
+
             config.put("StrictHostKeyChecking", "no");
             this.session.setConfig(config);
-            // Connect to remote server
+
             this.session.connect();
-            // Apply the port forwarding
+
             this.session.setPortForwardingL(lport, rhost, rport);
         }
         catch (Exception e){
